@@ -1,0 +1,78 @@
+﻿<windows:WindowBase x:Class="FileTag.Views.Windows.Window_Watches"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:windows="clr-namespace:FileTag.Views.Windows"
+                      xmlns:h="clr-namespace:WpfAutoGrid;assembly=WpfAutoGrid"
+                      mc:Ignorable="d"
+                      Title="Window_WatchDirs" Height="500" Width="600"
+                      WindowStartupLocation="CenterOwner"
+                      ShowCloseButton="False"
+                      ShowMinButton="False"
+                      ShowMaxRestoreButton="False"
+                      GlowBrush="{DynamicResource AccentColorBrush}">
+    
+    <h:AutoGrid RowCount="1" RowHeight="*" Columns="*,*">
+        <GroupBox Header="File picker">
+            <h:AutoGrid Rows="auto, *" ColumnCount="1" ColumnWidth="*">
+                <ScrollViewer HorizontalScrollBarVisibility="auto" VerticalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding CurrentDirPath}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button
+                                    Content="{Binding }"
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type GroupBox}}, Path=DataContext.GoToConcreteDir }"
+                                    CommandParameter="{Binding }" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+                <ScrollViewer VerticalScrollBarVisibility="auto">
+                    <ItemsControl ItemsSource="{Binding CurrentDirItems}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <h:AutoGrid RowCount="1" RowHeight="*" Columns="40, *, 40" Margin="0 2 0 2">
+                                    <Button 
+                                        Content="->"
+                                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type GroupBox}}, Path=DataContext.GoToConcreteDir }"
+                                        CommandParameter="{Binding }"/>
+                                    <Label Content="{Binding Name}"/>
+                                    <Button 
+                                        Content="+"
+                                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type GroupBox}}, Path=DataContext.AddDirToWatch }"
+                                        CommandParameter="{Binding }"/>
+                                </h:AutoGrid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </h:AutoGrid>
+        </GroupBox>
+        <h:AutoGrid ColumnCount="1" ColumnWidth="*" Rows="*,auto">
+            <GroupBox Header="Watch dirs" Margin="0 5 5 5">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding WatchDirs}">
+
+                    </ItemsControl>
+                </ScrollViewer>
+            </GroupBox>
+            <h:AutoGrid RowCount="1" RowHeight="*" Columns="*,*" Margin="0 0 0 5">
+                <Button Content="Save"
+                        Command="{Binding Save}"
+                        Style="{StaticResource AccentedSquareButtonStyle}" 
+                        Margin="0 0 5 0"/>
+                <Button Content="Cancel" 
+                        Command="{Binding Cancel}"
+                        Style="{StaticResource AccentedSquareButtonStyle}"/>
+            </h:AutoGrid>
+        </h:AutoGrid>
+        
+    </h:AutoGrid>
+</windows:WindowBase>

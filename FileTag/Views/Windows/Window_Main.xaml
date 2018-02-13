@@ -1,0 +1,115 @@
+﻿<windows:WindowBase x:Class="FileTag.Views.Windows.Window_Main"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:windows="clr-namespace:FileTag.Views.Windows"
+                      xmlns:h="clr-namespace:WpfAutoGrid;assembly=WpfAutoGrid"
+                      Title="MainWindow" Height="600" Width="900"
+                      WindowStartupLocation="CenterScreen"
+                      GlowBrush="{DynamicResource AccentColorBrush}" FontSize="20">
+
+    <windows:WindowBase.Resources>
+        <!-- tag list item template -->
+        <DataTemplate x:Key="TagItem">
+            <h:AutoGrid RowCount="1" RowHeight="*" Columns="*, auto" Height="40">
+                <Label Content="{Binding Path=Data.Name}" />
+                <Button x:Name="RemoveButton"
+                        Width="40" Background="Red" Visibility="Collapsed"
+                        Command="{Binding RemoveCommand}"
+                        CommandParameter="{Binding }"
+                        >
+                    <icons:PackIconFontAwesome Kind="TrashAltSolid"/>
+                </Button>
+            </h:AutoGrid>
+            <DataTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="RemoveButton" 
+                            Property="Visibility" Value="Visible" />
+                </Trigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+    </windows:WindowBase.Resources>
+
+    <h:AutoGrid ColumnCount="1" ColumnWidth="*" Rows="auto,*" >
+        <!-- top menu -->
+        <Menu>
+            <MenuItem Header="Watch folders" 
+                      Command="{Binding ManageWatchFolders}"/>
+        </Menu>
+        <controls:MetroAnimatedTabControl>
+            <!-- FILES tab -->
+            <TabItem Header="Files">
+                <h:AutoGrid RowCount="1" RowHeight="*" Columns="*,*">
+                    <!-- FILES list -->
+                    <GroupBox Header="Files">
+                        <ListBox ItemsSource="{Binding Files}"
+                                 SelectedItem="{Binding SelectedFile}"
+                                 DisplayMemberPath="Name"/>
+                    </GroupBox>
+                    <ScrollViewer Margin="0 5 5 5" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <Expander Header="Tags" IsExpanded="True">
+                                <h:AutoGrid ColumnCount="1" ColumnWidth="*" Rows="*, auto">
+                                    <!-- Selected FILE TAGS -->
+                                    <ItemsControl ItemsSource="{Binding SelectedFileTags}"
+                                                  DisplayMemberPath="Name">
+                                    </ItemsControl>
+                                    <!-- Add TAG to FILE -->
+                                    <h:AutoGrid RowCount="1" RowHeight="*" Columns="*, auto" 
+                                                Height="40" Margin="0 15 0 0">
+                                        <TextBox Text="{Binding NewTagText, UpdateSourceTrigger=PropertyChanged}" 
+                                                 VerticalContentAlignment="Center"
+                                                 FontSize="20"
+                                                 >
+                                            <TextBox.InputBindings>
+                                                <KeyBinding Command="{Binding AddTagToSelectedFile}" Key="Return" />
+                                            </TextBox.InputBindings>
+                                        </TextBox>
+                                        <Button Content="+"
+                                                Command="{Binding AddTagToSelectedFile}"
+                                                VerticalContentAlignment="Center" 
+                                                Margin="5 0 0 0" Width="40"/>
+                                    </h:AutoGrid>
+                                </h:AutoGrid>
+                            </Expander>
+                            <Expander Header="Properties">
+
+                            </Expander>
+                        </StackPanel>
+                    </ScrollViewer>
+                </h:AutoGrid>
+            </TabItem>
+            <!-- TAGS tab -->
+            <TabItem Header="Tags">
+                <h:AutoGrid RowCount="1" RowHeight="*" Columns="*,*">
+                    <GroupBox Header="Tags">
+                        <!-- TAGS list -->
+                        <ListBox ItemsSource="{Binding Tags}"
+                                 SelectedItem="{Binding SelectedTag}"
+                                 ItemTemplate="{StaticResource TagItem}">
+                        </ListBox>
+                    </GroupBox>
+                    <ScrollViewer Margin="0 5 5 5" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <Expander Header="Files" IsExpanded="True">
+                                <h:AutoGrid ColumnCount="1" ColumnWidth="*" Rows="*">
+                                    <!-- Selected TAG FILES -->
+                                    <ItemsControl ItemsSource="{Binding SelectedTagFiles}"
+                                                  DisplayMemberPath="Name">
+                                    </ItemsControl>
+                                </h:AutoGrid>
+                            </Expander>
+                            <Expander Header="Related tags">
+
+                            </Expander>
+                            <Expander Header="Properties">
+
+                            </Expander>
+                        </StackPanel>
+                    </ScrollViewer>
+                </h:AutoGrid>
+            </TabItem>
+        </controls:MetroAnimatedTabControl>
+    </h:AutoGrid>
+</windows:WindowBase>
