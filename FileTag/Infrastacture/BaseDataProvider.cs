@@ -9,9 +9,6 @@ namespace FileTag.Infrastacture
 {
     public class BaseDataProvider : IDataProvider, IDisposable
     {
-        private TagDbContext _db;
-        private IMapper _mapper;
-
         public BaseDataProvider()
         {
             _db = new TagDbContext();
@@ -24,6 +21,9 @@ namespace FileTag.Infrastacture
 
             _mapper = mapperConfig.CreateMapper();
         }
+
+        private TagDbContext _db;
+        private IMapper _mapper;
 
         public void AddFiles(params File[] files)
         {
