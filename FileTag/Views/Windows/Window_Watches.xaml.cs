@@ -1,7 +1,4 @@
-﻿using FileTag.Infrastacture.Watcher;
-using FileTag.MVVM;
-using FileTag.ViewModels;
-using MahApps.Metro.Controls;
+﻿using FileTag.MVVM;
 
 namespace FileTag.Views.Windows
 {
@@ -9,8 +6,6 @@ namespace FileTag.Views.Windows
     {
         public Window_Watches(ViewModelBase vm) : base(vm)
         {
-            //InitializeComponent();
-
             vm.Closing += () =>
             {
                 Close();
