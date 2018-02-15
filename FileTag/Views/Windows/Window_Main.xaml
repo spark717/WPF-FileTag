@@ -10,15 +10,36 @@
                       GlowBrush="{DynamicResource AccentColorBrush}" FontSize="20">
 
     <windows:WindowBase.Resources>
+        <Style TargetType="Button" x:Key="RemoveButtonStyle">
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderThickness="0" CornerRadius="2">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Red" />
+                                <Setter Property="Foreground" Value="Black" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- tag list item template -->
-        <DataTemplate x:Key="TagItem">
+        <DataTemplate x:Key="TagsDataTemplate">
             <h:AutoGrid RowCount="1" RowHeight="*" Columns="*, auto" Height="40">
-                <Label Content="{Binding Path=Data.Name}" />
+                <Label Content="{Binding }" />
                 <Button x:Name="RemoveButton"
-                        Width="40" Background="Red" Visibility="Collapsed"
+                        Width="40" Visibility="Collapsed"
                         Command="{Binding RemoveCommand}"
                         CommandParameter="{Binding }"
-                        >
+                        Style="{StaticResource RemoveButtonStyle}"
+                        Margin="0 -1 -1 -1">
                     <icons:PackIconFontAwesome Kind="TrashAltSolid"/>
                 </Button>
             </h:AutoGrid>
@@ -29,6 +50,27 @@
                 </Trigger>
             </DataTemplate.Triggers>
         </DataTemplate>
+
+        <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="Bd" BorderBrush="White" BorderThickness="1" Background="White" CornerRadius="2">
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="Black"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="Black"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </windows:WindowBase.Resources>
 
     <h:AutoGrid ColumnCount="1" ColumnWidth="*" Rows="auto,*" >
@@ -44,24 +86,21 @@
                     <!-- FILES list -->
                     <GroupBox Header="Files">
                         <ListBox ItemsSource="{Binding Files}"
-                                 SelectedItem="{Binding SelectedFile}"
-                                 DisplayMemberPath="Data.Name"/>
+                                 SelectedItem="{Binding SelectedFile}"/>
                     </GroupBox>
                     <ScrollViewer Margin="0 5 5 5" VerticalScrollBarVisibility="Auto">
                         <StackPanel>
                             <Expander Header="Tags" IsExpanded="True">
                                 <h:AutoGrid ColumnCount="1" ColumnWidth="*" Rows="*, auto">
                                     <!-- Selected FILE TAGS -->
-                                    <ItemsControl ItemsSource="{Binding Path=SelectedFile.Data.Tags}"
-                                                  DisplayMemberPath="Name">
+                                    <ItemsControl ItemsSource="{Binding Path=SelectedFile.Tags}">
                                     </ItemsControl>
                                     <!-- Add TAG to FILE -->
                                     <h:AutoGrid RowCount="1" RowHeight="*" Columns="*, auto" 
                                                 Height="40" Margin="0 15 0 0">
                                         <TextBox Text="{Binding NewTagText, UpdateSourceTrigger=PropertyChanged}" 
                                                  VerticalContentAlignment="Center"
-                                                 FontSize="20"
-                                                 >
+                                                 FontSize="20">
                                             <TextBox.InputBindings>
                                                 <KeyBinding Command="{Binding AddTagToSelectedFileCommand}" Key="Return" />
                                             </TextBox.InputBindings>
@@ -87,8 +126,8 @@
                         <!-- TAGS list -->
                         <ListBox ItemsSource="{Binding Tags}"
                                  SelectedItem="{Binding SelectedTag}"
-                                 ItemTemplate="{StaticResource TagItem}">
-                        </ListBox>
+                                 ItemTemplate="{StaticResource TagsDataTemplate}"
+                                 ItemContainerStyle="{StaticResource ListBoxItemStyle}" />
                     </GroupBox>
                     <ScrollViewer Margin="0 5 5 5" VerticalScrollBarVisibility="Auto">
                         <StackPanel>

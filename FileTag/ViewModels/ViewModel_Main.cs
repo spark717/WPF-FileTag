@@ -117,10 +117,10 @@ namespace FileTag.ViewModels
                 });
 
             // how create new vm
-            Func<DBTag, ViewModel_Tag> creationStrategy = tag =>
+            ViewModel_Tag creationStrategy(DBTag tag)
             {
                 return new ViewModel_Tag(tag) { RemoveCommand = removeCommand };
-            };
+            }
 
             Tags = Tags.SmartFill(_dataProvider.GetTags(), creationStrategy, false);
             RefreshProperty(nameof(SelectedTag));
