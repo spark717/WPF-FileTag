@@ -51,13 +51,13 @@ namespace FileTag.ViewModels
             Save = new BaseCommand<object>()
                 .Subscribe(() =>
                 {
-                    PerformClose();
+                    //PerformClose();
                 });
 
             Cancel = new BaseCommand<object>()
                 .Subscribe(() =>
                 {
-                    PerformClose(cancel: true);
+                    //PerformClose(cancel: true);
                 });
 
             GoToConcrete("root");
@@ -147,13 +147,13 @@ namespace FileTag.ViewModels
             RisePropertyChanged(nameof(CurrentDirItems));
         }
 
-        protected override void OnClose(bool cancel)
-        {
-            if (!cancel)
-            {
-                _watcher.Dirs = WatchDirs.Select(i => i.FullPath).ToList();
-                _watcher.Scan(syncAfterScan: true);
-            }
-        }
+        //protected override void OnClose(bool cancel)
+        //{
+        //    if (!cancel)
+        //    {
+        //        _watcher.Dirs = WatchDirs.Select(i => i.FullPath).ToList();
+        //        _watcher.Scan(syncAfterScan: true);
+        //    }
+        //}
     }
 }

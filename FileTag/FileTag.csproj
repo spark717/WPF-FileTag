@@ -96,6 +96,9 @@
     <Compile Include="Infrastacture\DIContainer.cs" />
     <Compile Include="Models\DBFile.cs" />
     <Compile Include="Models\DBTag.cs" />
+    <Compile Include="MVVM\IContainer.cs" />
+    <Compile Include="MVVM\BaseContainer.cs" />
+    <Compile Include="MVVM\SmartCollectionExtensions.cs" />
     <Compile Include="Trash\Command.cs" />
     <Compile Include="MVVM\ReactiveCollection.cs" />
     <Compile Include="MVVM\BaseCommand.cs" />

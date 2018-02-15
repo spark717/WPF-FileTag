@@ -7,20 +7,24 @@ namespace FileTag.Infrastacture
     public interface IDataProvider: IDisposable
     {
         // TAGS
-        bool TagExists(string name);
         DBTag GetTag(string name);
-        void AddTags(params Tag[] tags);
-        void RemoveTag(int tagId);
-        IEnumerable<DBTag> GetTags();
+
+        /// <summary>
+        /// If tag exists, find tag with same name. 
+        /// If tag don't exists create new.
+        /// Also add relation to exists files.
+        /// </summary>
+        /// <param name="tag"> model </param>
+        /// <param name="releatedFiles"> related files </param>
+        void TryAddTag(Tag tag, params DBFile[] relatedFiles);
+        void RemoveTag(DBTag tag);
+        ICollection<DBTag> GetTags();
 
         // FILES
         bool FileExists(string path);
         DBFile GetFile(string path);
-        IEnumerable<DBFile> GetFiles();
+        ICollection<DBFile> GetFiles();
         IEnumerable<string> GetFilesPaths();
         void AddFiles(params File[] files);
-
-        // RELATIONS
-        void AddRelation(int fileId, int tagId);
     }
 }

@@ -4,6 +4,7 @@ using FileTag.Models;
 using FileTag.MVVM;
 using FileTag.Views.Locators;
 using FileTag.Views.Windows;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,129 +18,112 @@ namespace FileTag.ViewModels
             _watcher = watcher;
             _watcher.SyncComplete += (w) =>
             {
-                RisePropertyChanged(nameof(Files));
+                //RisePropertyChanged(nameof(Files));
             };
 
-            // commands configuration
-            ManageWatchFolders = new BaseCommand<object>()
-                .Subscribe(() =>
-                {
-                    //var w = new Window_Watches(_watcher);
-                    WindowLocator.Default.OpenWindow<Window_Watches>();
-                });
+            Tags = new List<ViewModel_Tag>();
+            Files = new List<ViewModel_File>();
 
-            AddTagToSelectedFile = new BaseCommand<object>()
-                .Subscribe(() =>
-                {
-                    if (SelectedFile == null) return;
-                    if (string.IsNullOrEmpty(NewTagText)) return;
+            InitCommands();
 
-                    TryAddTagToFile(SelectedFile, NewTagText);
-                    NewTagText = "";
+            ConfigureEvents();
 
-                    RisePropertyChanged(nameof(SelectedFileTags));
-                    RisePropertyChanged(nameof(Tags));
-                });
-
-            RemoveTag = new BaseCommand<string>()
-                .Subscribe(message =>
-                {
-                    System.Windows.MessageBox.Show(message);
-                });
+            SelectedTabIndex = -1;
+            SelectedTabIndex = 0;
         }
 
         // fields
         private Watcher _watcher;
         private IDataProvider _dataProvider;
-        private DBFile _selectedFile;
-        private string _newTagText;
-        private ViewModel_Tag _selectedTag;
 
         // collections bindings
-        public IEnumerable<DBFile> Files { get => LoadFiles(); }
-        public IEnumerable<ViewModel_Tag> Tags { get => LoadTags(); }
-        public IEnumerable<DBTag> SelectedFileTags { get => LoadSelectedFileTags(); }
-        public IEnumerable<DBFile> SelectedTagFiles { get => LoadSelectedTagFiles(); }
+        public List<ViewModel_File> Files { get; set; }
+        public List<ViewModel_Tag> Tags { get; set; }
 
         // selected binding
-        public DBFile SelectedFile
-        {
-            get => _selectedFile;
-            set
-            {
-                _selectedFile = value;
-            }
-        }
-
-        public ViewModel_Tag SelectedTag
-        {
-            get => _selectedTag;
-            set
-            {
-                _selectedTag = value;
-            }
-        }
+        public ViewModel_File SelectedFile { get; set; }
+        public ViewModel_Tag SelectedTag { get; set; }
+        public int SelectedTabIndex { get; set; }
 
         // text bindings
-        public string NewTagText
-        {
-            get => _newTagText;
-            set
-            {
-                _newTagText = value;
-                RisePropertyChanged(nameof(NewTagText));
-            }
-        }
-
+        public string NewTagText { get; set; }
+        public int SelectedFile_Tags { get; set; }
         // commands
-        public BaseCommand<object> ManageWatchFolders { get; set; }
-        public BaseCommand<object> AddTagToSelectedFile { get; set; }
-        public BaseCommand<string> RemoveTag { get; set; }
+        public BaseCommand<object> ManageWatchFoldersCommand { get; set; }
+        public BaseCommand<object> AddTagToSelectedFileCommand { get; set; }
+        public BaseCommand<ViewModel_Tag> RemoveTagCommand { get; set; }
 
-        private IEnumerable<DBFile> LoadFiles()
+        private void InitCommands()
         {
-            return _dataProvider.GetFiles().ToList();
-        }
-
-        private IEnumerable<ViewModel_Tag> LoadTags()
-        {
-            BaseCommand<ViewModel_Tag> testCommand = new BaseCommand<ViewModel_Tag>()
-            .Subscribe(vm =>
-            {
-                _dataProvider.RemoveTag(vm.Data.Id);
-                RisePropertyChanged(nameof(Tags));
-            });
-
-            return _dataProvider.GetTags().Select(t => new ViewModel_Tag(t) { RemoveCommand = testCommand });
-        }
-
-        private IEnumerable<DBTag> LoadSelectedFileTags()
-        {
-            return SelectedFile?.Tags.ToList();
-        }
-
-        private IEnumerable<DBFile> LoadSelectedTagFiles()
-        {
-            return SelectedTag?.Data.Files.ToList();
-        }
-
-        private void TryAddTagToFile(DBFile file, string tagName)
-        {
-            var tagId = _dataProvider.GetTag(tagName)?.Id;
-
-            if (tagId == null)
-            {
-                var tag = new Tag()
+            ManageWatchFoldersCommand = new BaseCommand<object>()
+                .Subscribe(() =>
                 {
-                    Name = tagName
-                };
+                    WindowLocator.Default.OpenWindow<Window_Watches>();
+                });
 
-                _dataProvider.AddTags(tag);
+            AddTagToSelectedFileCommand = new BaseCommand<object>()
+                .Subscribe(() =>
+                {
+                    if (SelectedFile == null) return;
+                    if (string.IsNullOrEmpty(NewTagText)) return;
 
-                tagId = _dataProvider.GetTag(tagName).Id;
-            }
+                    Tag tag = new Tag() { Name = NewTagText };
+                    DBFile file = SelectedFile.Data;
 
-            _dataProvider.AddRelation(file.Id, tagId.Value);
+                    _dataProvider.TryAddTag(tag, file);
+
+                    NewTagText = "";
+
+                    RefreshProperty(nameof(SelectedFile));
+                });
+
+            RemoveTagCommand = new BaseCommand<ViewModel_Tag>()
+                .Subscribe(vm =>
+                {
+                    _dataProvider.RemoveTag(vm.Data);
+                    UpdateTags();
+                });
+        }
+
+        private void ConfigureEvents()
+        {
+            OnPropertyChanged(nameof(SelectedTabIndex), () =>
+            {
+                if (SelectedTabIndex == 0)
+                {
+                    UpdateFiles();
+                }
+                else if (SelectedTabIndex == 1)
+                {
+                    UpdateTags();
+                }
+            });
+        }
+
+        private void UpdateFiles()
+        {
+            Files = Files.SmartFill(_dataProvider.GetFiles(), ViewModel_File.Create, false);
+            RefreshProperty(nameof(SelectedFile));
+        }
+
+        private void UpdateTags()
+        {
+            // how remove tag from db
+            var removeCommand = new BaseCommand<ViewModel_Tag>()
+                .Subscribe(vm =>
+                {
+                    _dataProvider.RemoveTag(vm.Data);
+                    UpdateTags();
+                });
+
+            // how create new vm
+            Func<DBTag, ViewModel_Tag> creationStrategy = tag =>
+            {
+                return new ViewModel_Tag(tag) { RemoveCommand = removeCommand };
+            };
+
+            Tags = Tags.SmartFill(_dataProvider.GetTags(), creationStrategy, false);
+            RefreshProperty(nameof(SelectedTag));
         }
     }
 }

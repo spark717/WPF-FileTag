@@ -1,45 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileTag.MVVM
 {
-    public class ViewModelBase : INotifyPropertyChanged
+    public abstract class ViewModelBase : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public event Action Closing;
 
-        public void RisePropertyChanged(string prop)
+        protected void RisePropertyChanged(string prop)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        /// <summary>
-        /// Ocures when page going to history, and opened new page
-        /// </summary>
-        public virtual void OnSleep()
+        public void OnPropertyChanged(string prop, Action action)
         {
+            PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == prop)
+                    action();
+            };
         }
 
-        /// <summary>
-        /// Ocures when page returns from history, by back action
-        /// </summary>
-        /// <param name="args"></param>
-        public virtual void OnAwake(object args)
+        protected void RefreshProperty(string propName)
         {
+            var prop = this.GetType().GetProperty(propName);
+            var oldValue = prop.GetValue(this);
+            prop.SetValue(this, null);
+            prop.SetValue(this, oldValue);
         }
-
-        protected virtual void OnClose(bool cancel = false)
-        {
-        }
-
-        public virtual void PerformClose(bool cancel = false)
-        {
-            OnClose();
-            Closing?.Invoke();
-        }
+        
     }
 }

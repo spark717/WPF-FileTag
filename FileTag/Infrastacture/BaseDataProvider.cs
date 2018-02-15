@@ -3,7 +3,6 @@ using FileTag.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Z.EntityFramework.Plus;
 
 namespace FileTag.Infrastacture
 {
@@ -39,33 +38,33 @@ namespace FileTag.Infrastacture
             _db.SaveChanges();
         }
 
-        public void AddRelation(int fileId, int tagId)
-        {
-            DBFile dbFile = _db.Files.FirstOrDefault(f => f.Id == fileId);
-            if (dbFile == null) return;
+        //public void AddRelation(int fileId, int tagId)
+        //{
+        //    DBFile dbFile = _db.Files.FirstOrDefault(f => f.Id == fileId);
+        //    if (dbFile == null) return;
 
-            DBTag dbTag = _db.Tags.FirstOrDefault(t => t.Id == tagId);
-            if (dbTag == null) return;
+        //    DBTag dbTag = _db.Tags.FirstOrDefault(t => t.Id == tagId);
+        //    if (dbTag == null) return;
 
-            if (dbFile.Tags.Contains(dbTag)) return;
+        //    if (dbFile.Tags.Contains(dbTag)) return;
 
-            dbFile.Tags.Add(dbTag);
-            _db.SaveChanges();
-        }
+        //    dbFile.Tags.Add(dbTag);
+        //    _db.SaveChanges();
+        //}
 
-        public void AddTags(params Tag[] tags)
-        {
-            foreach (var tag in tags)
-            {
-                if (!TagExists(tag.Name))
-                {
-                    DBTag dbTag = _mapper.Map<DBTag>(tag);
-                    _db.Tags.Add(dbTag);
-                }
-            }
+        //public void AddTags(params Tag[] tags)
+        //{
+        //    foreach (var tag in tags)
+        //    {
+        //        if (!TagExists(tag.Name))
+        //        {
+        //            DBTag dbTag = _mapper.Map<DBTag>(tag);
+        //            _db.Tags.Add(dbTag);
+        //        }
+        //    }
 
-            _db.SaveChanges();
-        }
+        //    _db.SaveChanges();
+        //}
 
         public void Dispose()
         {
@@ -82,9 +81,9 @@ namespace FileTag.Infrastacture
             return _db.Files.FirstOrDefault(f => f.Path == path);
         }
 
-        public IEnumerable<DBFile> GetFiles()
+        public ICollection<DBFile> GetFiles()
         {
-            return _db.Files.AsEnumerable();
+            return _db.Files.ToList();
         }
 
         public IEnumerable<string> GetFilesPaths()
@@ -97,19 +96,33 @@ namespace FileTag.Infrastacture
             return _db.Tags.FirstOrDefault(t => t.Name == name);
         }
 
-        public IEnumerable<DBTag> GetTags()
+        public ICollection<DBTag> GetTags()
         {
-            return _db.Tags.AsEnumerable();
+            return _db.Tags.ToList();
         }
 
-        public void RemoveTag(int tagId)
+        public void RemoveTag(DBTag tag)
         {
-            _db.Tags.Where(t => t.Id == tagId).Delete();
+            _db.Tags.Remove(tag);
+            _db.SaveChanges();
         }
 
         public bool TagExists(string name)
         {
             return _db.Tags.Any(t => t.Name == name);
+        }
+
+        public void TryAddTag(Tag tag, params DBFile[] relatedFiles)
+        {
+            DBTag dbTag = TagExists(tag.Name) ? GetTag(tag.Name) : _db.Tags.Add(_mapper.Map<DBTag>(tag));
+
+            if (relatedFiles != null && relatedFiles.Any())
+                foreach (var dbFile in relatedFiles)
+                {
+                    dbTag.Files.Add(dbFile);
+                }
+
+            _db.SaveChanges();
         }
     }
 }
