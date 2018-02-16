@@ -99,7 +99,7 @@
     <Compile Include="MVVM\IContainer.cs" />
     <Compile Include="MVVM\BaseContainer.cs" />
     <Compile Include="MVVM\SmartCollectionExtensions.cs" />
-    <Compile Include="Trash\Command.cs" />
+    <Compile Include="MVVM\SmartObsCollection.cs" />
     <Compile Include="MVVM\ReactiveCollection.cs" />
     <Compile Include="MVVM\BaseCommand.cs" />
     <Compile Include="Infrastacture\BaseDataProvider.cs" />
@@ -115,19 +115,8 @@
     <Compile Include="MVVM\IBaseCommands.cs" />
     <Compile Include="MVVM\ViewModelBase.cs" />
     <Compile Include="ViewModels\ViewModel_File.cs" />
-    <Compile Include="Trash\ViewModel_Files.cs" />
-    <Compile Include="Trash\ViewModel_FS.cs" />
     <Compile Include="ViewModels\ViewModel_Tag.cs" />
     <Compile Include="ViewModels\ViewModel_Watches.cs" />
-    <Compile Include="Trash\NavigationService.cs" />
-    <Compile Include="Trash\Pages\BasePage.cs" />
-    <Compile Include="Trash\Pages\PageFactory.cs" />
-    <Compile Include="Trash\Pages\Page_Files.xaml.cs">
-      <DependentUpon>Page_Files.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Trash\Pages\Page_FS.xaml.cs">
-      <DependentUpon>Page_FS.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Locators\WindowLocator.cs" />
     <Compile Include="Views\Windows\WindowBase.cs" />
     <Compile Include="Views\Windows\Window_Watches.xaml.cs">
@@ -146,14 +135,6 @@
       <DependentUpon>Window_Main.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Trash\Pages\Page_Files.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Trash\Pages\Page_FS.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Windows\Window_Watches.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
