@@ -8,7 +8,6 @@ namespace FileTag.Models
     {
         public int Id { get; set; }
 
-        [NotMapped]
         public virtual ICollection<DBTag> Tags { get; set; }
 
         public DBFile()

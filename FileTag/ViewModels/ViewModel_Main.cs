@@ -69,7 +69,7 @@ namespace FileTag.ViewModels
             NewTagCommand = new BaseCommand<object>()
                 .Subscribe(() =>
                 {
-                    if (string.IsNullOrEmpty(NewTagName) || string.IsNullOrEmpty(NewTagDescription)) return;
+                    if (string.IsNullOrEmpty(NewTagName)) return;
 
                     var newTag = new Tag()
                     {
