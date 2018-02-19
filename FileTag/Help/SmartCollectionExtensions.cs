@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FileTag.MVVM
+namespace FileTag.Help
 {
     public static class SmartCollectionExtensions
     {

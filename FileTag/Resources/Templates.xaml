@@ -1,0 +1,49 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:h="clr-namespace:WpfAutoGrid;assembly=WpfAutoGrid"
+                    xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks">
+    
+    <!-- LIST BOX Data Templates-->
+    
+    <!-- TAG LIST item template -->
+    <DataTemplate x:Key="TagsDataTemplate">
+        <h:AutoGrid RowCount="1" RowHeight="*" Columns="*, auto" Height="40">
+            <Label Content="{Binding }" Foreground="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=Foreground}" />
+            <Button x:Name="RemoveButton"
+                        Width="40" Visibility="Collapsed"
+                        Command="{Binding RemoveCommand}"
+                        CommandParameter="{Binding }"
+                        Style="{StaticResource RemoveButtonStyle}">
+                <icons:PackIconFontAwesome Kind="TrashAltSolid"/>
+            </Button>
+        </h:AutoGrid>
+        <DataTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="RemoveButton" 
+                            Property="Visibility" Value="Visible" />
+            </Trigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+
+    <!-- ITEMS CONTROL Data templates -->
+    
+    <!-- FILE  -->
+    <DataTemplate x:Key="FileTagDataTemplate">
+        <h:AutoGrid RowCount="1" RowHeight="*" Columns="*, auto" Height="40">
+            <Label Content="{Binding }"/>
+            <Button x:Name="RemoveButton"
+                        Width="40" Visibility="Collapsed"
+                        Command="{Binding RemoveCommand}"
+                        CommandParameter="{Binding }"
+                        Style="{StaticResource RemoveButtonStyle}">
+                <icons:PackIconModern Kind="Minus" />
+            </Button>
+        </h:AutoGrid>
+        <DataTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="RemoveButton" 
+                            Property="Visibility" Value="Visible" />
+            </Trigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+</ResourceDictionary>

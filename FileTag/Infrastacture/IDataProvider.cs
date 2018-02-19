@@ -1,7 +1,6 @@
 ﻿using FileTag.Models;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace FileTag.Infrastacture
 {
@@ -18,6 +17,12 @@ namespace FileTag.Infrastacture
         /// <param name="tag"> model </param>
         /// <param name="releatedFiles"> related files </param>
         void TryAddTag(Tag tag, params DBFile[] relatedFiles);
+        /// <summary>
+        /// New tag
+        /// </summary>
+        /// <param name="tag"> model </param>
+        /// <returns> false if tag exist </returns>
+        bool NewTag(Tag tag);
         void RemoveTag(DBTag tag);
         ICollection<DBTag> GetTags();
 
@@ -27,5 +32,8 @@ namespace FileTag.Infrastacture
         ICollection<DBFile> GetFiles();
         IEnumerable<string> GetFilesPaths();
         void AddFiles(params File[] files);
+
+        // RELATION
+        void RemoveRelation(DBFile file, DBTag tag);
     }
 }

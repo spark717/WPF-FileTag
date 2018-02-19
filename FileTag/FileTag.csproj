@@ -61,6 +61,15 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.107.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Core.1.0.107.0\lib\net46\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.EF6, Version=1.0.107.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.EF6.1.0.107.0\lib\net46\System.Data.SQLite.EF6.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.SQLite.Linq, Version=1.0.107.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Data.SQLite.Linq.1.0.107.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Numerics" />
@@ -96,10 +105,12 @@
     <Compile Include="Infrastacture\DIContainer.cs" />
     <Compile Include="Models\DBFile.cs" />
     <Compile Include="Models\DBTag.cs" />
+    <Compile Include="Models\DBWatchDir.cs" />
     <Compile Include="MVVM\IContainer.cs" />
     <Compile Include="MVVM\BaseContainer.cs" />
-    <Compile Include="MVVM\SmartCollectionExtensions.cs" />
-    <Compile Include="MVVM\SmartObsCollection.cs" />
+    <Compile Include="Help\SmartCollectionExtensions.cs" />
+    <Compile Include="MVVM\INamedCommands.cs" />
+    <Compile Include="MVVM\NamedCommands.cs" />
     <Compile Include="MVVM\ReactiveCollection.cs" />
     <Compile Include="MVVM\BaseCommand.cs" />
     <Compile Include="Infrastacture\BaseDataProvider.cs" />
@@ -123,6 +134,14 @@
       <DependentUpon>Window_Watches.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\ViewModel_Main.cs" />
+    <Page Include="Resources\Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Templates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Windows\Window_Main.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -180,5 +199,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Fody.2.4.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.2.4.1\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\System.Data.SQLite.Core.1.0.107.0\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Data.SQLite.Core.1.0.107.0\build\net46\System.Data.SQLite.Core.targets'))" />
   </Target>
+  <Import Project="..\packages\System.Data.SQLite.Core.1.0.107.0\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.107.0\build\net46\System.Data.SQLite.Core.targets')" />
 </Project>

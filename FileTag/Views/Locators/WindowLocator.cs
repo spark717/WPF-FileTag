@@ -1,10 +1,5 @@
 ﻿using FileTag.Infrastacture;
 using FileTag.Views.Windows;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileTag.Views.Locators
 {

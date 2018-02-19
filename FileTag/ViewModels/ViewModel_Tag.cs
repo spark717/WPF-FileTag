@@ -1,4 +1,5 @@
-﻿using FileTag.Models;
+﻿using FileTag.Help;
+using FileTag.Models;
 using FileTag.MVVM;
 using System.Collections.Generic;
 
@@ -12,7 +13,6 @@ namespace FileTag.ViewModels
         }
 
         private List<ViewModel_File> _files;
-
 
         public static ViewModel_Tag Create(DBTag tag)
         {

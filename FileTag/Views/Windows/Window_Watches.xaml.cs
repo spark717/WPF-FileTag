@@ -6,10 +6,10 @@ namespace FileTag.Views.Windows
     {
         public Window_Watches(ViewModelBase vm) : base(vm)
         {
-            vm.Closing += () =>
+            RegisterViewModelCommand("close", param =>
             {
                 Close();
-            };
+            });
         }
     }
 }

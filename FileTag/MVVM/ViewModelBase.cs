@@ -1,25 +1,27 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace FileTag.MVVM
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event Action Closing;
-
-        protected void RisePropertyChanged(string prop)
+        public ViewModelBase()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+            NamedCommands = new NamedCommands();
+            RegisterCommands();
         }
 
-        public void OnPropertyChanged(string prop, Action action)
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public INamedCommands NamedCommands { get; set; }
+
+        protected virtual void RegisterCommands()
         {
-            PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == prop)
-                    action();
-            };
+
+        }
+
+        public virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         protected void RefreshProperty(string propName)
@@ -30,5 +32,9 @@ namespace FileTag.MVVM
             prop.SetValue(this, oldValue);
         }
         
+        public void PerformClose()
+        {
+
+        }
     }
 }

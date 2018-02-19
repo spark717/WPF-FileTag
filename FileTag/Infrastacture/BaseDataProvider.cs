@@ -2,7 +2,6 @@
 using FileTag.Models;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace FileTag.Infrastacture
@@ -38,34 +37,6 @@ namespace FileTag.Infrastacture
 
             _db.SaveChanges();
         }
-
-        //public void AddRelation(int fileId, int tagId)
-        //{
-        //    DBFile dbFile = _db.Files.FirstOrDefault(f => f.Id == fileId);
-        //    if (dbFile == null) return;
-
-        //    DBTag dbTag = _db.Tags.FirstOrDefault(t => t.Id == tagId);
-        //    if (dbTag == null) return;
-
-        //    if (dbFile.Tags.Contains(dbTag)) return;
-
-        //    dbFile.Tags.Add(dbTag);
-        //    _db.SaveChanges();
-        //}
-
-        //public void AddTags(params Tag[] tags)
-        //{
-        //    foreach (var tag in tags)
-        //    {
-        //        if (!TagExists(tag.Name))
-        //        {
-        //            DBTag dbTag = _mapper.Map<DBTag>(tag);
-        //            _db.Tags.Add(dbTag);
-        //        }
-        //    }
-
-        //    _db.SaveChanges();
-        //}
 
         public void Dispose()
         {
@@ -124,6 +95,23 @@ namespace FileTag.Infrastacture
                 }
 
             _db.SaveChanges();
+        }
+
+        public void RemoveRelation(DBFile file, DBTag tag)
+        {
+            file.Tags.Remove(tag);
+            _db.SaveChanges();
+        }
+
+        public bool NewTag(Tag tag)
+        {
+            if (TagExists(tag.Name))
+                return false;
+
+            var entry = _mapper.Map<DBTag>(tag);
+            _db.Tags.Add(entry);
+            _db.SaveChanges();
+            return true;
         }
     }
 }

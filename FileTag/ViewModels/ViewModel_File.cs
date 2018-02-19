@@ -1,4 +1,5 @@
-﻿using FileTag.Models;
+﻿using FileTag.Help;
+using FileTag.Models;
 using FileTag.MVVM;
 using System.Collections.Generic;
 
@@ -13,18 +14,25 @@ namespace FileTag.ViewModels
 
         private List<ViewModel_Tag> _tags;
 
+        public List<ViewModel_Tag> Tags
+        {
+            get
+            {
+                _tags.SmartFill(Data.Tags, TagCreationStrategy);
+                return _tags;
+            }
+        }
+
+        public BaseCommand<ViewModel_Tag> RemoveTagCommand { get; set; }
+
         public static ViewModel_File Create(DBFile file)
         {
             return new ViewModel_File(file);
         }
 
-        public List<ViewModel_Tag> Tags
+        private ViewModel_Tag TagCreationStrategy(DBTag tag)
         {
-            get
-            {
-                _tags.SmartFill(Data.Tags, ViewModel_Tag.Create);
-                return _tags;
-            }
+            return new ViewModel_Tag(tag) { RemoveCommand = RemoveTagCommand };
         }
     }
 }

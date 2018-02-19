@@ -11,18 +11,7 @@ namespace FileTag.ViewModels
 {
     public class ViewModel_Watches : ViewModelBase
     {
-        private Watcher _watcher;
-
-        public ObservableCollection<FSObject> WatchDirs { get; set; }
-        public List<FSObject> CurrentDirItems { get; set; }
-        public LinkedList<FSObject> CurrentDirPath { get; set; }
-        public ICommand GoToConcreteDir { get; set; }
-        public ICommand AddDirToWatch { get; set; }
-        public ICommand GoToParentDir { get; set; }
-        public ICommand Save { get; set; }
-        public ICommand Cancel { get; set; }
-
-        public ViewModel_Watches(Watcher watcher)
+        public ViewModel_Watches(Watcher watcher) : base()
         {
             _watcher = watcher;
             WatchDirs = new ObservableCollection<FSObject>();
@@ -51,17 +40,28 @@ namespace FileTag.ViewModels
             Save = new BaseCommand<object>()
                 .Subscribe(() =>
                 {
-                    //PerformClose();
+                    Close();
                 });
 
             Cancel = new BaseCommand<object>()
                 .Subscribe(() =>
                 {
-                    //PerformClose(cancel: true);
+                    Close(cancel: true);
                 });
 
             GoToConcrete("root");
         }
+
+        private Watcher _watcher;
+
+        public ObservableCollection<FSObject> WatchDirs { get; set; }
+        public List<FSObject> CurrentDirItems { get; set; }
+        public LinkedList<FSObject> CurrentDirPath { get; set; }
+        public ICommand GoToConcreteDir { get; set; }
+        public ICommand AddDirToWatch { get; set; }
+        public ICommand GoToParentDir { get; set; }
+        public ICommand Save { get; set; }
+        public ICommand Cancel { get; set; }
 
         private void AddToWatch(FSObject dir)
         {
@@ -143,17 +143,19 @@ namespace FileTag.ViewModels
             else
                 return;
 
-            RisePropertyChanged(nameof(CurrentDirPath));
-            RisePropertyChanged(nameof(CurrentDirItems));
+            //RisePropertyChanged(nameof(CurrentDirPath));
+            //RisePropertyChanged(nameof(CurrentDirItems));
         }
 
-        //protected override void OnClose(bool cancel)
-        //{
-        //    if (!cancel)
-        //    {
-        //        _watcher.Dirs = WatchDirs.Select(i => i.FullPath).ToList();
-        //        _watcher.Scan(syncAfterScan: true);
-        //    }
-        //}
+        private void Close(bool cancel = false)
+        {
+            if (!cancel)
+            {
+                _watcher.Dirs = WatchDirs.Select(i => i.FullPath).ToList();
+                _watcher.Scan(syncAfterScan: true);
+            }
+
+            NamedCommands.Execute("close");
+        }
     }
 }

@@ -12,6 +12,7 @@ namespace FileTag.Infrastacture
 
         public DbSet<DBTag> Tags { get; set; }
         public DbSet<DBFile> Files { get; set; }
+        //public DbSet<DBWatchDir> WatchDirs { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
